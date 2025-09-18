@@ -16,14 +16,27 @@ class UserController extends Controller
     /**
      * Tampilkan daftar user
      */
-    public function index()
+    public function index(Request $request)
     {
         // Cek permission
         if (!Gate::allows('view-user')) {
             abort(403, 'Tidak memiliki akses untuk melihat daftar user');
         }
 
-        return view('users.index');
+        $query = User::query();
+
+        // Search functionality
+        if ($request->has('search') && $request->search) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Paginate results
+        $users = $query->latest()->paginate(10);
+
+        return view('users.index', compact('users'));
     }
 
     /**
