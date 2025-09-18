@@ -21,7 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'nomor_telepon',
+        'photo',
+        'status',
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,5 +48,21 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Scope untuk user yang aktif
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Cek apakah user aktif
+     */
+    public function isActive()
+    {
+        return $this->status === 'active';
     }
 }
