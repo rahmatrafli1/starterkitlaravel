@@ -10,11 +10,176 @@
     @else
         <script src="https://cdn.tailwindcss.com"></script>
     @endif
+
+    <style>
+        /* Theme Styles */
+        body.theme-system,
+        body.theme-light {
+            background-color: #ffffff;
+        }
+
+        body.theme-system .bg-white,
+        body.theme-light .bg-white {
+            background-color: #ffffff;
+        }
+
+        body.theme-system .bg-gray-50,
+        body.theme-light .bg-gray-50 {
+            background-color: #f9fafb;
+        }
+
+        body.theme-dark {
+            background-color: #1f2937;
+            color: #f9fafb;
+        }
+
+        body.theme-dark .bg-white {
+            background-color: #374151;
+        }
+
+        body.theme-dark .bg-gray-50 {
+            background-color: #4b5563;
+        }
+
+        body.theme-dark .text-gray-900 {
+            color: #f9fafb;
+        }
+
+        body.theme-dark .text-gray-700 {
+            color: #d1d5db;
+        }
+
+        body.theme-dark .text-gray-600 {
+            color: #9ca3af;
+        }
+
+        body.theme-dark .text-gray-500 {
+            color: #6b7280;
+        }
+
+        body.theme-dark .border-b,
+        body.theme-dark .border-gray-200 {
+            border-color: #4b5563;
+        }
+
+        body.theme-dark .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        body.theme-dark .from-red-50 {
+            --tw-gradient-from: #4b5563;
+        }
+
+        body.theme-dark .to-orange-50 {
+            --tw-gradient-to: #374151;
+        }
+
+        /* System theme follows OS preference */
+        @media (prefers-color-scheme: dark) {
+            body.theme-system {
+                background-color: #1f2937;
+                color: #f9fafb;
+            }
+
+            body.theme-system .bg-white {
+                background-color: #374151;
+            }
+
+            body.theme-system .bg-gray-50 {
+                background-color: #4b5563;
+            }
+
+            body.theme-system .text-gray-900 {
+                color: #f9fafb;
+            }
+
+            body.theme-system .text-gray-700 {
+                color: #d1d5db;
+            }
+
+            body.theme-system .text-gray-600 {
+                color: #9ca3af;
+            }
+
+            body.theme-system .text-gray-500 {
+                color: #6b7280;
+            }
+
+            body.theme-system .border-b,
+            body.theme-system .border-gray-200 {
+                border-color: #4b5563;
+            }
+
+            body.theme-system .from-red-50 {
+                --tw-gradient-from: #4b5563;
+            }
+
+            body.theme-system .to-orange-50 {
+                --tw-gradient-to: #374151;
+            }
+        }
+    </style>
+
     <script>
         function toggleMobileMenu() {
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');
         }
+
+        function setTheme(theme) {
+            localStorage.setItem('theme', theme);
+            applyTheme(theme);
+            updateThemeButtons(theme);
+        }
+
+        function applyTheme(theme) {
+            const body = document.body;
+            body.classList.remove('theme-system', 'theme-light', 'theme-dark');
+
+            switch (theme) {
+                case 'light':
+                    body.classList.add('theme-light');
+                    break;
+                case 'dark':
+                    body.classList.add('theme-dark');
+                    break;
+                case 'system':
+                default:
+                    body.classList.add('theme-system');
+                    break;
+            }
+        }
+
+        function updateThemeButtons(activeTheme) {
+            const buttons = document.querySelectorAll('.theme-btn');
+            buttons.forEach(button => {
+                const theme = button.getAttribute('data-theme');
+                if (theme === activeTheme) {
+                    button.classList.add('bg-gray-200', 'text-gray-500');
+                    button.classList.remove('text-gray-600', 'hover:text-gray-900');
+                } else {
+                    button.classList.remove('bg-gray-200', 'text-gray-500');
+                    button.classList.add('text-gray-600', 'hover:text-gray-900');
+                }
+            });
+        }
+
+        function setupSystemThemeListener() {
+            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            mediaQuery.addEventListener('change', function(e) {
+                const currentTheme = localStorage.getItem('theme') || 'system';
+                if (currentTheme === 'system') {
+                    applyTheme('system');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'system';
+            applyTheme(savedTheme);
+            updateThemeButtons(savedTheme);
+            setupSystemThemeListener();
+        });
     </script>
 </head>
 
@@ -31,6 +196,34 @@
                 <!-- Desktop Menu -->
                 @if (Route::has('login'))
                     <div class="hidden md:flex items-center space-x-4">
+                        <!-- Theme Toggle (Desktop) -->
+                        <div class="flex bg-gray-100 rounded-lg p-1 mr-2">
+                            <button onclick="setTheme('system')"
+                                class="theme-btn px-2 py-1 text-xs rounded-md transition-colors" data-theme="system"
+                                title="System Theme">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </button>
+                            <button onclick="setTheme('light')"
+                                class="theme-btn px-2 py-1 text-xs rounded-md transition-colors" data-theme="light"
+                                title="Light Theme">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                            </button>
+                            <button onclick="setTheme('dark')"
+                                class="theme-btn px-2 py-1 text-xs rounded-md transition-colors" data-theme="dark"
+                                title="Dark Theme">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                </svg>
+                            </button>
+                        </div>
+
                         @auth
                             <a href="{{ url('/dashboard') }}"
                                 class="text-gray-700 hover:text-red-600 transition-colors">Dashboard</a>
@@ -62,6 +255,42 @@
             <!-- Mobile Menu -->
             @if (Route::has('login'))
                 <div id="mobile-menu" class="hidden md:hidden pb-4">
+                    <!-- Theme Toggle (Mobile) -->
+                    <div class="flex justify-center mb-4">
+                        <div class="flex bg-gray-100 rounded-lg p-1">
+                            <button onclick="setTheme('system')"
+                                class="theme-btn flex-1 px-3 py-2 text-xs rounded-md transition-colors"
+                                data-theme="system">
+                                <svg class="h-4 w-4 mx-auto mb-1" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                <span class="block">System</span>
+                            </button>
+                            <button onclick="setTheme('light')"
+                                class="theme-btn flex-1 px-3 py-2 text-xs rounded-md transition-colors"
+                                data-theme="light">
+                                <svg class="h-4 w-4 mx-auto mb-1" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                                <span class="block">Light</span>
+                            </button>
+                            <button onclick="setTheme('dark')"
+                                class="theme-btn flex-1 px-3 py-2 text-xs rounded-md transition-colors"
+                                data-theme="dark">
+                                <svg class="h-4 w-4 mx-auto mb-1" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                                </svg>
+                                <span class="block">Dark</span>
+                            </button>
+                        </div>
+                    </div>
+
                     @auth
                         <a href="{{ url('/dashboard') }}"
                             class="block py-2 text-gray-700 hover:text-red-600 transition-colors text-center">Dashboard</a>
@@ -83,7 +312,8 @@
     <!-- Mobile-Optimized Hero Section -->
     <section class="bg-gradient-to-r from-red-50 to-orange-50 py-12 sm:py-16 lg:py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
+            <h1
+                class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
                 Welcome to
                 <span class="text-red-600 block sm:inline">{{ config('app.name', 'Laravel') }}</span>
             </h1>
