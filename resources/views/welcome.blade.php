@@ -28,6 +28,13 @@
             background-color: #f9fafb;
         }
 
+        /* Theme toggle background untuk light mode */
+        body.theme-system .theme-toggle-bg,
+        body.theme-light .theme-toggle-bg {
+            background-color: #f3f4f6;
+            /* bg-gray-100 */
+        }
+
         body.theme-dark {
             background-color: #1f2937;
             color: #f9fafb;
@@ -39,6 +46,12 @@
 
         body.theme-dark .bg-gray-50 {
             background-color: #4b5563;
+        }
+
+        /* Theme toggle background untuk dark mode */
+        body.theme-dark .theme-toggle-bg {
+            background-color: #1f2937;
+            /* bg-gray-800 */
         }
 
         body.theme-dark .text-gray-900 {
@@ -89,6 +102,12 @@
                 background-color: #4b5563;
             }
 
+            /* Theme toggle background untuk system dark mode */
+            body.theme-system .theme-toggle-bg {
+                background-color: #1f2937;
+                /* bg-gray-800 */
+            }
+
             body.theme-system .text-gray-900 {
                 color: #f9fafb;
             }
@@ -116,6 +135,15 @@
 
             body.theme-system .to-orange-50 {
                 --tw-gradient-to: #374151;
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+
+            /* Theme toggle background untuk system light mode */
+            body.theme-system .theme-toggle-bg {
+                background-color: #f3f4f6;
+                /* bg-gray-100 */
             }
         }
     </style>
@@ -197,7 +225,7 @@
                 @if (Route::has('login'))
                     <div class="hidden md:flex items-center space-x-4">
                         <!-- Theme Toggle (Desktop) -->
-                        <div class="flex bg-gray-100 rounded-lg p-1 mr-2">
+                        <div class="flex theme-toggle-bg rounded-lg p-1 mr-2">
                             <button onclick="setTheme('system')"
                                 class="theme-btn px-2 py-1 text-xs rounded-md transition-colors" data-theme="system"
                                 title="System Theme">
@@ -257,7 +285,7 @@
                 <div id="mobile-menu" class="hidden md:hidden pb-4">
                     <!-- Theme Toggle (Mobile) -->
                     <div class="flex justify-center mb-4">
-                        <div class="flex bg-gray-100 rounded-lg p-1">
+                        <div class="flex theme-toggle-bg rounded-lg p-1">
                             <button onclick="setTheme('system')"
                                 class="theme-btn flex-1 px-3 py-2 text-xs rounded-md transition-colors"
                                 data-theme="system">
